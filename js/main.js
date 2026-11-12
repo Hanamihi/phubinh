@@ -28,7 +28,7 @@ const PROJECT_CONFIG = {
             name: "Liền kề", 
             label: "Đất ở liền kề", 
             color: "#00aeef", 
-            autoFillSvg: false,
+            autoFillSvg: true,
             showInLegend: true
         },
         { 
@@ -37,7 +37,7 @@ const PROJECT_CONFIG = {
             name: "Hỗn Hợp", 
             label: "Đất ở kết hợp kinh doanh", 
             color: "#4caf50", 
-            autoFillSvg: false,
+            autoFillSvg: true,
             showInLegend: true
         },
         { 
@@ -88,7 +88,7 @@ const PROJECT_CONFIG = {
             label: "Giữ chỗ", 
             mapColor: "#e74c3c",    
             textColor: "#e74c3c", 
-            showInLegend: true 
+            showInLegend: false 
         },
         { 
             keywords: ["chưa có thông tin", "chưa mở bán", "đang cập nhật"], 
