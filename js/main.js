@@ -30,7 +30,7 @@ const PROJECT_CONFIG = {
             name: "Liền kề", 
             label: "Đất ở liền kề", 
             color: "#00aeef", 
-            autoFillSvg: false,
+            autoFillSvg: true,
             showInLegend: true
         },
         { 
@@ -39,7 +39,7 @@ const PROJECT_CONFIG = {
             name: "Biệt thự", 
             label: "Đất ở biệt thự", 
             color: "#4caf50", // Màu xanh lá khớp với ảnh thực tế Vàng Cao Xá
-            autoFillSvg: false,
+            autoFillSvg: true,
             showInLegend: true
         }
         // Ví dụ khi dự án mới có thêm Shophouse hoặc Đất nền, chỉ cần bỏ comment dòng dưới:
