@@ -1,6 +1,6 @@
 /**
  * =========================================================================
- * KHỐI CẤU HÌNH TRUNG TÂM (CHỈ CẦN SỬA TẠI ĐÂY CHO MỌI DỰ ÁN VỀ SAU)
+ * KHỐI CẤU HÌNH TRUNG TÂM (DÙNG CHUNG CHO MỌI DỰ ÁN)
  * =========================================================================
  */
 const PROJECT_CONFIG = {
@@ -10,19 +10,17 @@ const PROJECT_CONFIG = {
     headerSubtitle: "Khu đô thị An Phong - Andora City",
 
     // 2. Đường dẫn Dữ liệu & Bản đồ
-    scriptUrl: "https://script.google.com/macros/s/AKfycbxDOEsv6D4A1uTNd3hGrmjB8QUwRMLqPI-RqPltOV2ZY83ghlgDwQbGwdOS6qCunex-/exec", // Thay link API của dự án
+    scriptUrl: "https://script.google.com/macros/s/AKfycbxDOEsv6D4A1uTNd3hGrmjB8QUwRMLqPI-RqPltOV2ZY83ghlgDwQbGwdOS6qCunex-/exec", 
     svgPath: "assets/svg/map.svg",
-    bgImagePath: "assets/images/bg-lumera.jpg",
+    bgImagePath: "assets/images/bg_lumera.jpg", // Thay đúng tên file ảnh nền của bạn
 
     // 3. Số điện thoại Zalo nhận liên hệ
     zaloPhone: "0858290389",
 
-    // 4. Quản lý đối tượng LOẠI ĐẤT (Tự động tạo Chú thích, ghép tên Popup & tô màu SVG nếu cần)
-    // - prefix: Ký hiệu đầu của Mã lô (VD: "LK", "BT", "SH", "HH", "NV"...)
-    // - name: Tên ngắn gọn để ghép với Mã thiết kế trong Popup (VD: "Liền kề (M24)")
-    // - label: Tên đầy đủ hiển thị ở Bảng chú thích góc dưới
-    // - color: Mã màu đại diện
-    // - autoFillSvg: Để false nếu file SVG đã tô màu sẵn từ AI; để true nếu muốn Web tự tô màu lô đất theo loại!
+    // Tự động chỉ hiện trong Bảng chú thích những Loại đất thực sự có mặt trong dữ liệu dự án
+    autoDetectLegend: true,
+
+    // 4. Danh mục các đối tượng LOẠI ĐẤT (Khai báo thoải mái nhiều mẫu cho mọi dự án)
     landTypes: [
         { 
             prefix: "LK", 
@@ -30,61 +28,72 @@ const PROJECT_CONFIG = {
             name: "Liền kề", 
             label: "Đất ở liền kề", 
             color: "#00aeef", 
-            autoFillSvg: true,
+            autoFillSvg: false,
             showInLegend: true
         },
         { 
             prefix: "HH", 
-            keywords: ["hỗn hợp", "hon hop"], 
+            keywords: ["hỗn hợp", "hon hop", "kết hợp kinh doanh"], 
             name: "Hỗn Hợp", 
             label: "Đất ở kết hợp kinh doanh", 
-            color: "#4caf50",
-            autoFillSvg: true,
+            color: "#4caf50", 
+            autoFillSvg: false,
+            showInLegend: true
+        },
+        { 
+            prefix: "BT", 
+            keywords: ["biệt thự", "biet thu"], 
+            name: "Biệt thự", 
+            label: "Đất ở biệt thự", 
+            color: "#fbbc04", 
+            autoFillSvg: false,
+            showInLegend: true
+        },
+        { 
+            prefix: "SH", 
+            keywords: ["shophouse", "thương mại"], 
+            name: "Shophouse", 
+            label: "Nhà phố thương mại", 
+            color: "#9b59b6", 
+            autoFillSvg: false,
             showInLegend: true
         }
-        // Ví dụ khi dự án mới có thêm Shophouse hoặc Đất nền, chỉ cần bỏ comment dòng dưới:
-        // { prefix: "SH", keywords: ["shophouse", "thương mại"], name: "Shophouse", label: "Nhà phố thương mại", color: "#9b59b6", autoFillSvg: false, showInLegend: true },
     ],
 
-    // 5. Quản lý đối tượng TÌNH TRẠNG BÁN HÀNG (Tự động tô màu Bản đồ, Popup & Chú thích)
-    // - keywords: Các cụm từ có thể xuất hiện trong cột Trạng thái trên Google Sheet (không phân biệt hoa/thường)
-    // - label: Tên hiển thị trên Bảng chú thích
-    // - mapColor: Màu tô đè lên lô đất trên bản đồ (Để null nếu muốn giữ nguyên màu gốc của Loại đất)
-    // - textColor: Màu chữ của dòng Tình trạng bên trong bảng Popup
-    // - showInLegend: true = hiển thị ô màu ở Bảng chú thích; false = ẩn khỏi Bảng chú thích
+    // 5. Quản lý đối tượng TÌNH TRẠNG BÁN HÀNG
     salesStatuses: [
         { 
-            keywords: ["đang bán", "dang ban", "mở bán", "còn trống"], 
+            keywords: ["đang bán", "dang ban", "mở bán", "còn trống", "available"], 
             label: "Đang bán", 
-            mapColor: null,         // Giữ nguyên màu của Loại đất (Xanh dương / Xanh lá)
-            textColor: "#27ae60",   // Chữ màu xanh lá nổi bật trong Popup
+            mapColor: null,         
+            textColor: "#27ae60",   
             showInLegend: false 
         },
         { 
-            keywords: ["đã bán", "da ban"], 
+            keywords: ["đã bán", "da ban", "sold"], 
             label: "Đã bán", 
-            mapColor: "#7f8c8d",    // Tô màu Xám lên bản đồ
+            mapColor: "#7f8c8d",    
             textColor: "#7f8c8d", 
             showInLegend: true 
         },
         { 
-            keywords: ["đặt cọc", "dat coc", "đang cọc"], 
+            keywords: ["đặt cọc", "dat coc", "đang cọc", "booked"], 
             label: "Đặt cọc", 
-            mapColor: "#f1c40f",    // Tô màu Vàng lên bản đồ
+            mapColor: "#f1c40f",    
             textColor: "#f39c12", 
             showInLegend: true 
         },
         { 
             keywords: ["giữ chỗ", "giu cho", "lock"], 
             label: "Giữ chỗ", 
-            mapColor: "#e74c3c",    // Tô màu Đỏ lên bản đồ
+            mapColor: "#e74c3c",    
             textColor: "#e74c3c", 
-            showInLegend: false 
+            showInLegend: true 
         },
         { 
             keywords: ["chưa có thông tin", "chưa mở bán", "đang cập nhật"], 
             label: "Chưa có thông tin", 
-            mapColor: null,         // Giữ nguyên màu gốc của Loại đất
+            mapColor: null,         
             textColor: "#7f8c8d", 
             showInLegend: false 
         }
@@ -94,7 +103,8 @@ const PROJECT_CONFIG = {
 let dataBDS = {}; 
 const infoBox = document.getElementById('info-box');
 
-// Khởi tạo giao diện tĩnh (Tiêu đề, Bảng chú thích, Nút Zalo)
+// Khởi tạo giao diện tĩnh & tự động bổ sung dòng Tầng 5 nếu index.html chưa có
+ensureFloorRowsInDOM();
 initStaticUI();
 
 // Tải ĐỒNG THỜI file SVG và dữ liệu JSON từ Google Sheets
@@ -109,12 +119,14 @@ Promise.all([
     const wrapper = document.getElementById('map-wrapper');
     wrapper.innerHTML = svgContent;
     
-    // Tự động chuẩn hóa SVG và lồng ảnh nền khớp viewBox
     const svgViewBoxWidth = prepareSvgAndBackground(wrapper);
-
     dataBDS = data; 
-    console.log("Đã tải dữ liệu và bản đồ thành công!");
     
+    // Cập nhật lại Bảng chú thích dựa trên các loại đất thực tế có trong dự án (nếu bật autoDetectLegend)
+    if (PROJECT_CONFIG.autoDetectLegend) {
+        renderLegend(dataBDS);
+    }
+
     initMap(svgViewBoxWidth);      
     initZoom();     
 })
@@ -124,21 +136,44 @@ Promise.all([
 });
 
 /**
- * HÀM KHỞI TẠO TIÊU ĐỀ, BẢNG CHÚ THÍCH ĐỘNG & NÚT ZALO TỪ PROJECT_CONFIG
+ * TỰ ĐỘNG BỔ SUNG DÒNG TẦNG 5 VÀO HTML NẾU FILE INDEX.HTML CŨ CHƯA CÓ
  */
-function initStaticUI() {
-    document.title = PROJECT_CONFIG.pageTitle;
-    const hTitle = document.getElementById('header-title');
-    const hSub = document.getElementById('header-subtitle');
-    if (hTitle) hTitle.innerText = PROJECT_CONFIG.headerTitle;
-    if (hSub) hSub.innerText = PROJECT_CONFIG.headerSubtitle;
+function ensureFloorRowsInDOM() {
+    const floorDetails = document.getElementById('floor-details');
+    if (!floorDetails) return;
 
-    // 1. Render cột chú thích Loại đất (Từ PROJECT_CONFIG.landTypes)
+    // Nếu chưa có thẻ #t5, tự động chèn dòng Tầng 5 vào ngay sau Tầng 4 (trước dòng Tổng diện tích sàn)
+    if (!document.getElementById('t5')) {
+        const t4El = document.getElementById('t4');
+        const t4Row = t4El ? t4El.closest('.info-row') : null;
+        
+        const t5Row = document.createElement('div');
+        t5Row.className = 'info-row';
+        t5Row.innerHTML = '<span>Tầng 5:</span> <b id="t5"></b>';
+
+        if (t4Row && t4Row.nextSibling) {
+            floorDetails.insertBefore(t5Row, t4Row.nextSibling);
+        } else {
+            floorDetails.appendChild(t5Row);
+        }
+    }
+}
+
+/**
+ * HÀM VẼ BẢNG CHÚ THÍCH (HỖ TRỢ LỌC TỰ ĐỘNG THEO DỮ LIỆU DỰ ÁN)
+ */
+function renderLegend(lotData = null) {
     const typesContainer = document.getElementById('legend-types');
     const fallbackLegendGrid = document.querySelector('.legend-grid');
-    
-    const typesHtml = PROJECT_CONFIG.landTypes
-        .filter(item => item.showInLegend !== false)
+
+    const activeTypes = PROJECT_CONFIG.landTypes.filter(item => {
+        if (item.showInLegend === false) return false;
+        if (!lotData || !PROJECT_CONFIG.autoDetectLegend) return true;
+        // Chỉ hiện trên Chú thích nếu trong dữ liệu dự án có ít nhất 1 lô khớp prefix
+        return Object.keys(lotData).some(id => item.prefix && id.toUpperCase().startsWith(item.prefix.toUpperCase()));
+    });
+
+    const typesHtml = activeTypes
         .map(item => `<div class="legend-item"><span class="color-box" style="background: ${item.color};"></span> ${item.label}</div>`)
         .join('');
 
@@ -151,14 +186,25 @@ function initStaticUI() {
         typesContainer.innerHTML = typesHtml;
         document.getElementById('legend-statuses').innerHTML = statusHtml;
     } else if (fallbackLegendGrid) {
-        // Tương thích ngược nếu file index.html cũ chưa đặt id="legend-types"
         fallbackLegendGrid.innerHTML = `
             <div class="legend-col">${typesHtml}</div>
             <div class="legend-col">${statusHtml}</div>
         `;
     }
+}
 
-    // 2. Gắn sự kiện nút Zalo
+/**
+ * HÀM KHỞI TẠO TIÊU ĐỀ, CHÚ THÍCH & NÚT ZALO
+ */
+function initStaticUI() {
+    document.title = PROJECT_CONFIG.pageTitle;
+    const hTitle = document.getElementById('header-title');
+    const hSub = document.getElementById('header-subtitle');
+    if (hTitle) hTitle.innerText = PROJECT_CONFIG.headerTitle;
+    if (hSub) hSub.innerText = PROJECT_CONFIG.headerSubtitle;
+
+    renderLegend(null);
+
     const zaloBtn = document.getElementById('smart-zalo-btn');
     if (zaloBtn) {
         zaloBtn.addEventListener('click', function(e) {
@@ -225,26 +271,40 @@ function prepareSvgAndBackground(wrapper) {
 }
 
 /**
- * HÀM HỖ TRỢ 1: TÌM ĐỐI TƯỢNG LOẠI ĐẤT TỪ MÃ LÔ HOẶC CỘT PHÂN LOẠI
+ * TÌM GIÁ TRỊ TRONG OBJECT LÔ ĐẤT THEO DANH SÁCH TÊN CỘT (KHÔNG PHÂN BIỆT HOA/THƯỜNG)
  */
+function pickValue(info, keysList) {
+    if (!info) return "";
+    // 1. Khớp chính xác
+    for (const k of keysList) {
+        if (info[k] !== undefined && info[k] !== null && info[k] !== "" && info[k] !== "-") {
+            return info[k];
+        }
+    }
+    // 2. Khớp không phân biệt hoa/thường
+    const infoKeys = Object.keys(info);
+    for (const k of keysList) {
+        const foundKey = infoKeys.find(ik => ik.trim().toLowerCase() === k.toLowerCase());
+        if (foundKey && info[foundKey] !== undefined && info[foundKey] !== null && info[foundKey] !== "" && info[foundKey] !== "-") {
+            return info[foundKey];
+        }
+    }
+    return "";
+}
+
 function matchLandType(id, rawLoaiText) {
     const idUpper = (id || "").toUpperCase();
     const loaiLower = (rawLoaiText || "").toLowerCase();
 
-    // Ưu tiên 1: Khớp theo tiền tố mã lô (VD: LK04-04 -> khớp prefix "LK")
     let matched = PROJECT_CONFIG.landTypes.find(t => t.prefix && idUpper.startsWith(t.prefix.toUpperCase()));
     if (matched) return matched;
 
-    // Ưu tiên 2: Khớp theo từ khóa trong cột Loại đất
     matched = PROJECT_CONFIG.landTypes.find(t => 
         t.keywords && t.keywords.some(k => loaiLower.includes(k.toLowerCase()))
     );
     return matched || null;
 }
 
-/**
- * HÀM HỖ TRỢ 2: TÌM ĐỐI TƯỢNG TÌNH TRẠNG BÁN HÀNG
- */
 function matchSalesStatus(rawStatusText) {
     if (!rawStatusText) return null;
     const statusLower = rawStatusText.toString().trim().toLowerCase();
@@ -254,37 +314,42 @@ function matchSalesStatus(rawStatusText) {
 }
 
 /**
- * HÀM HỖ TRỢ 3: KIỂM TRA GIÁ TRỊ TRỐNG HOẶC BẰNG 0 (DÙNG ĐỂ ẨN TẦNG KHÔNG CÓ)
+ * KIỂM TRA GIÁ TRỊ TRỐNG HOẶC BẰNG 0 (HỖ TRỢ SỐ THẬP PHÂN DẤU PHẨY VÀ DẤU CHẤM: 3,5 / 3.5)
  */
 function isEmptyOrZero(val) {
     if (val === null || val === undefined) return true;
     const str = val.toString().trim();
     if (str === "" || str === "-") return true;
 
-    // Bóc tách bỏ các đơn vị ở cuối (m2, %, tầng, tỷ) để kiểm tra con số thực tế
     const numStr = str.replace(/\s*(m2|m²|%|tầng|tang|tỷ|ty)\s*$/i, '').replace(/,/g, '.').trim();
-    const num = parseFloat(numStr);
-    if (!isNaN(num) && num === 0) return true;
-
+    // Chỉ coi là bằng 0 nếu toàn bộ chuỗi là một con số và bằng 0 (VD: "0", "0.00", "0,0")
+    if (/^[+-]?\d+(\.\d+)?$/.test(numStr) && parseFloat(numStr) === 0) {
+        return true;
+    }
     return false;
 }
 
 /**
- * HÀM HỖ TRỢ 4: CẬP NHẬT DÒNG THÔNG TIN TRONG POPUP & TỰ ĐỘNG ẨN NẾU BẰNG 0 / TRỐNG
+ * CẬP NHẬT DÒNG THÔNG TIN TRONG POPUP & TỰ ĐỘNG ẨN NẾU TRỐNG / BẰNG 0
  */
-function updateInfoRow(elementId, rawValue, defaultUnit = "") {
+function updateInfoRow(elementId, rawValue, defaultUnit = "", customLabel = null) {
     const el = document.getElementById(elementId);
     if (!el) return false;
     const row = el.closest('.info-row');
 
     if (isEmptyOrZero(rawValue)) {
-        if (row) row.style.display = "none"; // Ẩn hoàn toàn dòng này nếu không có dữ liệu hoặc = 0
+        if (row) row.style.display = "none";
         return false;
     }
 
+    // Đổi nhãn tiêu đề dòng nếu được yêu cầu (VD: đổi "Tầng 4:" thành "Tầng Tum:")
+    if (customLabel && row) {
+        const labelSpan = row.querySelector('span');
+        if (labelSpan) labelSpan.innerText = customLabel;
+    }
+
     let displayVal = rawValue.toString().trim();
-    // Nếu có truyền defaultUnit (VD: "tầng" hoặc "m2") mà dữ liệu chỉ là con số thuần túy, tự gắn thêm đơn vị
-    if (defaultUnit && !displayVal.toLowerCase().endsWith(defaultUnit.toLowerCase())) {
+    if (defaultUnit && !displayVal.toLowerCase().includes(defaultUnit.toLowerCase())) {
         const numericTest = displayVal.replace(/,/g, '.');
         if (!isNaN(Number(numericTest))) {
             displayVal = `${displayVal} ${defaultUnit}`;
@@ -292,7 +357,7 @@ function updateInfoRow(elementId, rawValue, defaultUnit = "") {
     }
 
     el.innerText = displayVal;
-    if (row) row.style.display = "flex"; // Hiện lại dòng nếu có dữ liệu hợp lệ
+    if (row) row.style.display = "flex";
     return true;
 }
 
@@ -304,9 +369,6 @@ function initMap(svgViewBoxWidth) {
     const lotMetrics = {};
     const dynamicFontSize = ((svgViewBoxWidth || 1920) / 1920) * 4;
 
-    // ==========================================
-    // BƯỚC 1: QUÉT TẤT CẢ ĐỂ TÔ MÀU THEO ĐỐI TƯỢNG & TÍNH GÓC XOAY
-    // ==========================================
     lotElements.forEach(lot => {
         const id = lot.id.trim();
         if (!dataBDS[id]) return;
@@ -316,20 +378,16 @@ function initMap(svgViewBoxWidth) {
         if (allShapes.length === 0) return;
 
         const info = dataBDS[id];
-        const rawLoai = info.PhanLoai || info.Loai || info.MAUTK || "";
-        const rawStatus = info.TrangThai || info.TINHTRANGKD || "";
+        const rawLoai = pickValue(info, ["PhanLoai", "Loai", "MAUTK", "MauNha"]);
+        const rawStatus = pickValue(info, ["TrangThai", "TINHTRANGKD", "TinhTrang"]);
 
         const landTypeObj = matchLandType(id, rawLoai);
         const statusObj = matchSalesStatus(rawStatus);
 
-        // 1A. Tô màu theo Loại đất (nếu bật autoFillSvg: true trong PROJECT_CONFIG)
         if (landTypeObj && landTypeObj.autoFillSvg && landTypeObj.color) {
-            allShapes.forEach(shape => {
-                shape.style.fill = landTypeObj.color;
-            });
+            allShapes.forEach(shape => { shape.style.fill = landTypeObj.color; });
         }
 
-        // 1B. Tô màu đè lên theo Tình trạng bán hàng (nếu trạng thái có cấu hình mapColor)
         if (statusObj && statusObj.mapColor) {
             allShapes.forEach(shape => {
                 shape.style.fill = statusObj.mapColor; 
@@ -429,9 +487,6 @@ function initMap(svgViewBoxWidth) {
         };
     });
 
-    // ==========================================
-    // BƯỚC 2: ĐỒNG THUẬN GÓC XOAY NHÓM THÔNG MINH
-    // ==========================================
     const groups = {};
     for (let id in lotMetrics) {
         let p = lotMetrics[id].prefix;
@@ -453,8 +508,9 @@ function initMap(svgViewBoxWidth) {
 
         siblings.forEach(lot => {
             const info = dataBDS[lot.element.id];
-            if (info && info.GocXoay !== undefined && info.GocXoay !== "" && info.GocXoay !== "-") {
-                let manualAngle = parseFloat(info.GocXoay);
+            const gocXoay = pickValue(info, ["GocXoay"]);
+            if (gocXoay !== "") {
+                let manualAngle = parseFloat(gocXoay);
                 if (!isNaN(manualAngle)) {
                     lot.finalAngle = manualAngle;
                     return; 
@@ -478,9 +534,7 @@ function initMap(svgViewBoxWidth) {
         });
     }
 
-    // ==========================================
-    // BƯỚC 3: VẼ NHÃN MÃ LÔ VÀ GẮN SỰ KIỆN CLICK POPUP
-    // ==========================================
+    // VẼ NHÃN MÃ LÔ VÀ GẮN SỰ KIỆN CLICK POPUP
     for (let id in lotMetrics) {
         let lot = lotMetrics[id];
         const info = dataBDS[id];
@@ -496,20 +550,19 @@ function initMap(svgViewBoxWidth) {
         textLabel.textContent = id; 
         lot.element.appendChild(textLabel);
 
-        // Sự kiện Click hiển thị bảng thông tin
         lot.element.addEventListener('click', function(e) {
             document.getElementById('malo').innerText = "Lô: " + id;
             
-            // 1. Hiển thị Tình trạng bán hàng & Màu chữ theo cấu hình
+            // 1. Tình trạng bán hàng
             const statusEl = document.getElementById('trangThai');
-            const trangThaiText = info.TrangThai || info.TINHTRANGKD || "Đang cập nhật";
+            const trangThaiText = pickValue(info, ["TrangThai", "TINHTRANGKD", "TinhTrang"]) || "Đang cập nhật";
             const statusObj = matchSalesStatus(trangThaiText);
 
             statusEl.innerText = trangThaiText;
             statusEl.style.color = (statusObj && statusObj.textColor) ? statusObj.textColor : "#34495e";
 
-            // 2. Hiển thị Loại đất / Mẫu thiết kế theo cấu hình
-            const rawLoai = info.PhanLoai || info.Loai || info.MAUTK || "-";
+            // 2. Loại đất / Mẫu thiết kế
+            const rawLoai = pickValue(info, ["PhanLoai", "Loai", "MAUTK", "MauNha"]) || "-";
             const landTypeObj = matchLandType(id, rawLoai);
             let displayLoai = rawLoai;
 
@@ -522,30 +575,32 @@ function initMap(svgViewBoxWidth) {
             }
             document.getElementById('loai').innerText = displayLoai;
 
-            // 3. Hiển thị Diện tích lô đất
-            document.getElementById('dientich').innerText = info.DienTichLo || info.DT || "-";
+            // 3. Diện tích lô đất
+            document.getElementById('dientich').innerText = pickValue(info, ["DienTichLo", "DT", "DienTich"]) || "-";
             
-            // 4. Kiểm tra và hiển thị thông tin xây dựng + Tự động ẩn các tầng trống / bằng 0
+            // 4. Thông tin xây dựng & Các tầng (Hỗ trợ cả 3,5 tầng và 5 tầng)
             const constructInfo = document.getElementById('construction-info');
             const isDatNen = rawLoai.toLowerCase() === "đất nền";
 
             if (isDatNen) {
                 constructInfo.style.display = "none";
             } else {
-                // Tự động gắn đơn vị "tầng" cho Chiều cao nếu dữ liệu trả về chỉ có con số (VD: "4" -> "4 tầng")
-                const hasChieuCao = updateInfoRow('sotang', info.ChieuCao || info.TANGCAO, "tầng");
-                const hasDtxd     = updateInfoRow('dtxd', info.DienTichXD || info.DTXD, "m2");
-                const hasMatDo    = updateInfoRow('matdo', info.MatDo || info.MATDOXD, "%");
+                const rawChieuCao = pickValue(info, ["ChieuCao", "TANGCAO", "SoTang", "CaoTang"]);
+                const hasChieuCao = updateInfoRow('sotang', rawChieuCao, "tầng");
+                const hasDtxd     = updateInfoRow('dtxd', pickValue(info, ["DienTichXD", "DTXD"]), "m2");
+                const hasMatDo    = updateInfoRow('matdo', pickValue(info, ["MatDo", "MATDOXD"]), "%");
 
-                // Tự động ẩn bất kỳ tầng nào có giá trị trống, "-" hoặc bằng 0 (VD: nhà 3 tầng sẽ tự ẩn Tầng 4)
-                const hasT1 = updateInfoRow('t1', info.Tang1 || info.DTSANT1, "m2");
-                const hasT2 = updateInfoRow('t2', info.Tang2 || info.DTSANT2, "m2");
-                const hasT3 = updateInfoRow('t3', info.Tang3 || info.DTSANT3, "m2");
-                const hasT4 = updateInfoRow('t4', info.Tang4 || info.DTSANT4 || info.Tang4_Tum, "m2");
-                const hasT5 = updateInfoRow('t5', info.Tang5 || info.DTSANT5, "m2"); // Dự phòng nếu index.html có thêm id="t5"
-                const hasTongSan = updateInfoRow('tongSan', info.TongSanXD || info.TONGSANXD, "m2");
+                // Kiểm tra xem có phải nhà 3,5 tầng (3 tầng 1 tum) không để đổi nhãn Tầng 4 nếu muốn
+                const is35Tang = rawChieuCao && (/3[.,]5/.test(rawChieuCao.toString()) || rawChieuCao.toString().toLowerCase().includes("tum"));
+                const labelTang4 = is35Tang ? "Tầng 4 (Tum):" : "Tầng 4:";
 
-                // Ẩn cụm chi tiết sàn nếu tất cả các tầng đều bằng 0
+                const hasT1 = updateInfoRow('t1', pickValue(info, ["Tang1", "DTSANT1", "SanT1"]), "m2");
+                const hasT2 = updateInfoRow('t2', pickValue(info, ["Tang2", "DTSANT2", "SanT2"]), "m2");
+                const hasT3 = updateInfoRow('t3', pickValue(info, ["Tang3", "DTSANT3", "SanT3"]), "m2");
+                const hasT4 = updateInfoRow('t4', pickValue(info, ["Tang4", "DTSANT4", "Tang4_Tum", "TangTum", "DTSANTUM", "SanT4"]), "m2", labelTang4);
+                const hasT5 = updateInfoRow('t5', pickValue(info, ["Tang5", "DTSANT5", "SanT5", "Tang5_Tum"]), "m2");
+                const hasTongSan = updateInfoRow('tongSan', pickValue(info, ["TongSanXD", "TONGSANXD", "TongSan"]), "m2");
+
                 const floorDetails = document.getElementById('floor-details');
                 const floorTitle = constructInfo.querySelector('.floor-title');
                 const floorHr = constructInfo.querySelector('hr');
@@ -555,7 +610,6 @@ function initMap(svgViewBoxWidth) {
                 if (floorTitle) floorTitle.style.display = anyFloorVisible ? "block" : "none";
                 if (floorHr) floorHr.style.display = anyFloorVisible ? "block" : "none";
 
-                // Nếu toàn bộ thông số xây dựng đều trống/bằng 0 thì ẩn cả khối xây dựng
                 constructInfo.style.display = (hasChieuCao || hasDtxd || hasMatDo || anyFloorVisible) ? "block" : "none";
             }
 
@@ -568,11 +622,9 @@ function initMap(svgViewBoxWidth) {
     }
 }
 
-// Đóng popup khi click ra ngoài
 document.addEventListener('click', function() { infoBox.style.display = "none"; });
 infoBox.addEventListener('click', function(e) { e.stopPropagation(); });
 
-// Hàm khởi tạo Zoom
 function initZoom() {
     var eventsHandler = {
         haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel'],
