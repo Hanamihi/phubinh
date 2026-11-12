@@ -34,11 +34,11 @@ const PROJECT_CONFIG = {
             showInLegend: true
         },
         { 
-            prefix: "BT", 
-            keywords: ["biệt thự", "biet thu"], 
-            name: "Biệt thự", 
-            label: "Đất ở biệt thự", 
-            color: "#4caf50", // Màu xanh lá khớp với ảnh thực tế Vàng Cao Xá
+            prefix: "HH", 
+            keywords: ["hỗn hợp", "hon hop"], 
+            name: "Hỗn Hợp", 
+            label: "Đất ở kết hợp kinh doanh", 
+            color: "#4caf50",
             autoFillSvg: true,
             showInLegend: true
         }
