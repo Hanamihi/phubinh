@@ -21,6 +21,11 @@ const PROJECT_CONFIG = {
     autoDetectLegend: true,
 
     // 4. Danh mục các đối tượng LOẠI ĐẤT (Khai báo thoải mái nhiều mẫu cho mọi dự án)
+    // - prefix: Ký hiệu đầu của Mã lô (VD: "LK", "BT", "SH", "HH", "NV"...)
+    // - name: Tên ngắn gọn để ghép với Mã thiết kế trong Popup (VD: "Liền kề (M24)")
+    // - label: Tên đầy đủ hiển thị ở Bảng chú thích góc dưới
+    // - color: Mã màu đại diện
+    // - autoFillSvg: Để false nếu file SVG đã tô màu sẵn từ AI; để true nếu muốn Web tự tô màu lô đất theo loại!
     landTypes: [
         { 
             prefix: "LK", 
@@ -58,9 +63,16 @@ const PROJECT_CONFIG = {
             autoFillSvg: false,
             showInLegend: true
         }
+    // Ví dụ khi dự án mới có thêm Shophouse hoặc Đất nền, chỉ cần bỏ comment dòng dưới:
+    // { prefix: "SH", keywords: ["shophouse", "thương mại"], name: "Shophouse", label: "Nhà phố thương mại", color: "#9b59b6", autoFillSvg: false, showInLegend: true },
     ],
 
     // 5. Quản lý đối tượng TÌNH TRẠNG BÁN HÀNG
+    // - keywords: Các cụm từ có thể xuất hiện trong cột Trạng thái trên Google Sheet (không phân biệt hoa/thường)
+    // - label: Tên hiển thị trên Bảng chú thích
+    // - mapColor: Màu tô đè lên lô đất trên bản đồ (Để null nếu muốn giữ nguyên màu gốc của Loại đất)
+    // - textColor: Màu chữ của dòng Tình trạng bên trong bảng Popup
+    // - showInLegend: true = hiển thị ô màu ở Bảng chú thích; false = ẩn khỏi Bảng chú thích
     salesStatuses: [
         { 
             keywords: ["đang bán", "dang ban", "mở bán", "còn trống", "available"], 
