@@ -12,7 +12,7 @@ const PROJECT_CONFIG = {
     // 2. Đường dẫn Dữ liệu & Bản đồ
     scriptUrl: "https://script.google.com/macros/s/AKfycbxDOEsv6D4A1uTNd3hGrmjB8QUwRMLqPI-RqPltOV2ZY83ghlgDwQbGwdOS6qCunex-/exec", // Thay link API của dự án
     svgPath: "assets/svg/map.svg",
-    bgImagePath: "assets/images/bg_vangcaoxa.jpg",
+    bgImagePath: "assets/images/bg-lumera.jpg",
 
     // 3. Số điện thoại Zalo nhận liên hệ
     zaloPhone: "0858290389",
