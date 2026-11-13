@@ -5,14 +5,14 @@
  */
 const PROJECT_CONFIG = {
     // 1. Tiêu đề hiển thị
-    pageTitle: "An Phong - Andora City",
+    pageTitle: "song Lo - Green City",
     headerTitle: "QUẢN LÝ THÔNG TIN QUỸ ĐẤT DỰ ÁN",
-    headerSubtitle: "Khu đô thị An Phong - Andora City",
+    headerSubtitle: "Khu đô thị Sơn Phúc Green City",
 
     // 2. Đường dẫn Dữ liệu & Bản đồ
-    scriptUrl: "https://script.google.com/macros/s/AKfycbxDOEsv6D4A1uTNd3hGrmjB8QUwRMLqPI-RqPltOV2ZY83ghlgDwQbGwdOS6qCunex-/exec", 
+    scriptUrl: "https://script.google.com/macros/s/AKfycbzQ2YaHesRCN4RvkYCdmwoUacSRpNLHWwwHgLyIBaWkaAFCigBH9Bd1dH_TP4oOeE7_/exec", 
     svgPath: "assets/svg/map.svg",
-    bgImagePath: "assets/images/bg-lumera.jpg", // Thay đúng tên file ảnh nền của bạn
+    bgImagePath: "assets/images/bg-sonphuc.jpg", // Thay đúng tên file ảnh nền của bạn
 
     // 3. Số điện thoại Zalo nhận liên hệ
     zaloPhone: "0858290389",
