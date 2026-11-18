@@ -604,7 +604,7 @@ function initMap(svgViewBoxWidth) {
             
             const rawGiaBan = pickValue(info, ["GiaBan", "GIABAN", "Gia", "ThanhTien"]);
             const cleanGiaBan = (rawGiaBan && rawGiaBan.toString().trim().toLowerCase() === "chưa có thông tin") ? "" : rawGiaBan;
-            updateInfoRow('giaban', cleanGiaBan, "tỷ");
+            updateInfoRow('giaban', rawGiaBan, "tỷ");
             
             // 4. Thông tin xây dựng & Các tầng (Hỗ trợ cả 3,5 tầng và 5 tầng)
             const constructInfo = document.getElementById('construction-info');
