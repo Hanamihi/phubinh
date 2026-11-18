@@ -5,7 +5,7 @@
  */
 const PROJECT_CONFIG = {
     // 1. Tiêu đề hiển thị
-    pageTitle: "song Lo - Green City",
+    pageTitle: "Sông Lô - Green City",
     headerTitle: "QUẢN LÝ THÔNG TIN QUỸ ĐẤT DỰ ÁN",
     headerSubtitle: "Khu đô thị Sơn Phúc Green City",
 
@@ -63,8 +63,6 @@ const PROJECT_CONFIG = {
             autoFillSvg: false,
             showInLegend: true
         }
-    // Ví dụ khi dự án mới có thêm Shophouse hoặc Đất nền, chỉ cần bỏ comment dòng dưới:
-    // { prefix: "SH", keywords: ["shophouse", "thương mại"], name: "Shophouse", label: "Nhà phố thương mại", color: "#9b59b6", autoFillSvg: false, showInLegend: true },
     ],
 
     // 5. Quản lý đối tượng TÌNH TRẠNG BÁN HÀNG
@@ -115,7 +113,7 @@ const PROJECT_CONFIG = {
 let dataBDS = {}; 
 const infoBox = document.getElementById('info-box');
 
-// Khởi tạo giao diện tĩnh & tự động bổ sung dòng Tầng 5 nếu index.html chưa có
+// Khởi tạo giao diện tĩnh & tự động bổ sung dòng Giá bán + Tầng 5 nếu index.html chưa có
 ensureFloorRowsInDOM();
 initStaticUI();
 
@@ -148,14 +146,25 @@ Promise.all([
 });
 
 /**
- * TỰ ĐỘNG BỔ SUNG DÒNG TẦNG 5 VÀO HTML NẾU FILE INDEX.HTML CŨ CHƯA CÓ
+ * TỰ ĐỘNG BỔ SUNG DÒNG GIÁ BÁN (#giaban) & TẦNG 5 (#t5) VÀO HTML NẾU FILE INDEX.HTML CHƯA CÓ
  */
 function ensureFloorRowsInDOM() {
-    const floorDetails = document.getElementById('floor-details');
-    if (!floorDetails) return;
+    // 1. Tự động chèn dòng Giá bán (#giaban) ngay dưới dòng Diện tích lô (#dientich)
+    if (!document.getElementById('giaban')) {
+        const dtEl = document.getElementById('dientich');
+        const dtRow = dtEl ? dtEl.closest('.info-row') : null;
+        if (dtRow && dtRow.parentNode) {
+            const priceRow = document.createElement('div');
+            priceRow.className = 'info-row';
+            priceRow.style.display = 'none'; // Mặc định ẩn cho đến khi click vào lô có giá
+            priceRow.innerHTML = '<span>Giá bán:</span> <b id="giaban" style="color: #d35400;"></b>';
+            dtRow.parentNode.insertBefore(priceRow, dtRow.nextSibling);
+        }
+    }
 
-    // Nếu chưa có thẻ #t5, tự động chèn dòng Tầng 5 vào ngay sau Tầng 4 (trước dòng Tổng diện tích sàn)
-    if (!document.getElementById('t5')) {
+    // 2. Tự động chèn dòng Tầng 5 (#t5) vào ngay sau Tầng 4 (trước dòng Tổng diện tích sàn)
+    const floorDetails = document.getElementById('floor-details');
+    if (floorDetails && !document.getElementById('t5')) {
         const t4El = document.getElementById('t4');
         const t4Row = t4El ? t4El.closest('.info-row') : null;
         
@@ -333,7 +342,7 @@ function isEmptyOrZero(val) {
     const str = val.toString().trim();
     if (str === "" || str === "-") return true;
 
-    const numStr = str.replace(/\s*(m2|m²|%|tầng|tang|tỷ|ty)\s*$/i, '').replace(/,/g, '.').trim();
+    const numStr = str.replace(/\s*(m2|m²|%|tầng|tang|tỷ|tỉ|ty|ti)\s*$/i, '').replace(/,/g, '.').trim();
     // Chỉ coi là bằng 0 nếu toàn bộ chuỗi là một con số và bằng 0 (VD: "0", "0.00", "0,0")
     if (/^[+-]?\d+(\.\d+)?$/.test(numStr) && parseFloat(numStr) === 0) {
         return true;
@@ -354,7 +363,7 @@ function updateInfoRow(elementId, rawValue, defaultUnit = "", customLabel = null
         return false;
     }
 
-    // Đổi nhãn tiêu đề dòng nếu được yêu cầu (VD: đổi "Tầng 4:" thành "Tầng Tum:")
+    // Đổi nhãn tiêu đề dòng nếu được yêu cầu (VD: đổi "Tầng 4:" thành "Tầng 4 (Tum):")
     if (customLabel && row) {
         const labelSpan = row.querySelector('span');
         if (labelSpan) labelSpan.innerText = customLabel;
@@ -573,26 +582,32 @@ function initMap(svgViewBoxWidth) {
             statusEl.innerText = trangThaiText;
             statusEl.style.color = (statusObj && statusObj.textColor) ? statusObj.textColor : "#34495e";
 
-            // 2. Loại đất / Mẫu thiết kế
+            // 2. Loại đất / Mẫu thiết kế (Chuẩn hóa hiển thị nếu ghi "Dat Nen" không dấu)
             const rawLoai = pickValue(info, ["PhanLoai", "Loai", "MAUTK", "MauNha"]) || "-";
-            const landTypeObj = matchLandType(id, rawLoai);
-            let displayLoai = rawLoai;
+            const isDatNen = ["đất nền", "dat nen"].includes(rawLoai.trim().toLowerCase());
+            const normalizedLoai = isDatNen ? "Đất nền" : rawLoai;
+
+            const landTypeObj = matchLandType(id, normalizedLoai);
+            let displayLoai = normalizedLoai;
 
             if (landTypeObj && landTypeObj.name) {
-                if (rawLoai === "-" || rawLoai === "") {
+                if (normalizedLoai === "-" || normalizedLoai === "") {
                     displayLoai = landTypeObj.name;
-                } else if (!rawLoai.toLowerCase().includes(landTypeObj.name.toLowerCase())) {
-                    displayLoai = `${landTypeObj.name} (${rawLoai})`;
+                } else if (!normalizedLoai.toLowerCase().includes(landTypeObj.name.toLowerCase())) {
+                    displayLoai = `${landTypeObj.name} (${normalizedLoai})`;
                 }
             }
             document.getElementById('loai').innerText = displayLoai;
 
-            // 3. Diện tích lô đất
+            // 3. Diện tích lô đất & Giá bán (Tự động ẩn nếu trống, bằng 0 hoặc ghi "Chưa có thông tin")
             document.getElementById('dientich').innerText = pickValue(info, ["DienTichLo", "DT", "DienTich"]) || "-";
+            
+            const rawGiaBan = pickValue(info, ["GiaBan", "GIABAN", "Gia", "ThanhTien"]);
+            const cleanGiaBan = (rawGiaBan && rawGiaBan.toString().trim().toLowerCase() === "chưa có thông tin") ? "" : rawGiaBan;
+            updateInfoRow('giaban', cleanGiaBan, "tỷ");
             
             // 4. Thông tin xây dựng & Các tầng (Hỗ trợ cả 3,5 tầng và 5 tầng)
             const constructInfo = document.getElementById('construction-info');
-            const isDatNen = rawLoai.toLowerCase() === "đất nền";
 
             if (isDatNen) {
                 constructInfo.style.display = "none";
@@ -602,7 +617,7 @@ function initMap(svgViewBoxWidth) {
                 const hasDtxd     = updateInfoRow('dtxd', pickValue(info, ["DienTichXD", "DTXD"]), "m2");
                 const hasMatDo    = updateInfoRow('matdo', pickValue(info, ["MatDo", "MATDOXD"]), "%");
 
-                // Kiểm tra xem có phải nhà 3,5 tầng (3 tầng 1 tum) không để đổi nhãn Tầng 4 nếu muốn
+                // Kiểm tra xem có phải nhà 3,5 tầng (3 tầng 1 tum) không để đổi nhãn Tầng 4
                 const is35Tang = rawChieuCao && (/3[.,]5/.test(rawChieuCao.toString()) || rawChieuCao.toString().toLowerCase().includes("tum"));
                 const labelTang4 = is35Tang ? "Tầng 4 (Tum):" : "Tầng 4:";
 
